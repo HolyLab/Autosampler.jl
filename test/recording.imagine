@@ -1,0 +1,48 @@
+IMAGINE
+[general]
+header version=7.0
+app version=2.0, build (Mar 29 2017, 10:59:20)
+date and time=2017-04-03T10:53:37
+byte order=l
+rig=ocpi-1
+
+[misc params]
+stimulus file content=
+comment=
+ai data file=recording.ai
+image data file=recording.cam
+piezo=output scan rate:10000.0;start position:0.0 um;stop position:100.0 um
+
+[ai]
+nscans=10000
+channel list=0 1 2
+label list=piezo$stimuli$camera frame TTL
+scan rate=200.0
+min sample=-32768
+max sample=32767
+min input=-10.0
+max input=10.0
+
+[camera]
+original image depth=14
+saved image depth=14
+image width=2060
+image height=2048
+number of frames requested=200
+nStacks=20
+idle time between stacks=0.1 s
+pre amp gain=
+gain=0.0
+exposure time=0.03 s
+vertical shift speed=
+vertical clock vol amp=-1.0
+readout rate=
+pixel order=x y z
+frame index offset=0
+frames per stack=10
+pixel data type=UInt16
+camera=edge.main
+um per pixel=0.33
+binning=hbin:1;hstart:1;hend:2060;vbin:1;vend:2048;vstart:1
+angle from horizontal (deg)=-1.0
+bidirectional=0

@@ -80,7 +80,8 @@ using Autosampler
 update_imagine("Tim_20190327_tissue1.imagine", "Tim_20190327_coolexperiment_sequence.csv")
 ```
 This may prompt you to enter a bit more information, if the `.imagine` file doesn't encode
-the `xyz` sampling and if you didn't supply that info via keywords (see `?update_imagine`).
+the `um_per_pixel` (microns per pixel) sampling and if you didn't supply that info via
+keywords (see `?update_imagine`).
 Once you enter the required information, it will scan the corresponding `*.ai` file
 (e.g., `"Tim_20190327_tissue1.ai"`) and try to extract stimulus timing.
 If what it discovers is consistent with the `*sequence.csv` file, then it will rename

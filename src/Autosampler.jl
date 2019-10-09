@@ -40,11 +40,6 @@ function stim_randomize(io::IO, filein::AbstractString, trials::Int; writeheader
 end
 
 function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=replaceext(imaginefile, ".ai"), updatedfile=imaginefile, csvheader=0, kwargs...)
-    function pulsestarts(ai, chan_name)
-        sig = ai[findfirst(sig->sig.chan_name == chan_name, ai)]
-        starts = find_pulse_starts(sig; sampmap=:volts)
-    end
-
     header = ImagineFormat.parse_header(imaginefile)
     haskey(header, "stimulus sequence") && error(imaginefile, " already has a `stimulus sequence` entry")
     if um_per_pixel === nothing
@@ -58,28 +53,37 @@ function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=
 
     # Scan the AI file for stimulus triggers
     ai = parse_ai(aifile, header)
-    stimstarts  = pulsestarts(ai, "stimuli")
-    framestarts = pulsestarts(ai, "camera frame TTL")
+    aistim = getname(ai, "stimuli")
+    stimhi  = find_pulse_starts(aistim; sampmap=:volts)
+    stimlo  = find_pulse_stops(aistim; sampmap=:volts)
+    aiframe = getname(ai, "camera frame TTL")
+    framestarts = find_pulse_starts(aiframe; sampmap=:volts)
 
     # Record as frameidx after the stimulus trigger
     fps = header["frames per stack"]
-    frameidx = Int[]
-    for i in stimstarts
-        idx = last(searchsorted(framestarts, i))
-        push!(frameidx, idx)
+    framehi, framelo = Int[], Int[]
+    for (frameidxs, scanidxs) in ((framehi, stimhi), (framelo, stimlo))
+        for i in scanidxs
+            idx = last(searchsorted(framestarts, i))
+            push!(frameidxs, idx)
+        end
     end
 
     # Add to header
     header["stimulus sequence"] = join(df[:,1], '\$')
-    header["stimulus pulses"] = stimstarts
-    header["stimulus frame"] = frameidx
+    header["stimulus scan hi"] = stimhi
+    header["stimulus scan lo"] = stimlo
+    header["stimulus frame hi"] = framehi
+    header["stimulus frame lo"] = framelo
 
     if updatedfile == imaginefile
         mv(imaginefile, imaginefile*".orig")
         sleep(0.25)
         isfile(imaginefile) && error("failed to move the old file")
     end
-    ImagineFormat.save_header(updatedfile, header; misc=("stimulus sequence", "stimulus pulses", "stimulus frame"))
+    ImagineFormat.save_header(updatedfile, header; misc=(
+        "stimulus sequence", "stimulus scan hi", "stimulus scan lo",
+        "stimulus frame hi", "stimulus frame lo"))
     return header
 end
 

@@ -25,8 +25,8 @@ end
             update_imagine("recording.imagine", pathcsv; updatedfile=pathi, um_per_pixel=0.33)
             header = ImagineFormat.parse_header(pathi)
             @test split(header["stimulus sequence"], '\$') == rowid[p]
-            @test header["stimulus pulses"] == 1000:1000:8000
-            @test length(header["stimulus frame"]) == 8
+            @test header["stimulus scan hi"] == 1000:1000:8000
+            @test length(header["stimulus frame hi"]) == 8
             rm(pathi)
         end
     end

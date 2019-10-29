@@ -39,7 +39,7 @@ function stim_randomize(io::IO, filein::AbstractString, trials::Int; writeheader
     flush(io)
 end
 
-function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=replaceext(imaginefile, ".ai"), updatedfile=imaginefile, csvheader=0, kwargs...)
+function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=replaceext(imaginefile, ".ai"), difile=replaceext(imaginefile, ".di"), updatedfile=imaginefile, csvheader=0, kwargs...)
     header = ImagineFormat.parse_header(imaginefile)
     haskey(header, "stimulus sequence") && error(imaginefile, " already has a `stimulus sequence` entry")
     if um_per_pixel === nothing
@@ -56,8 +56,14 @@ function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=
     aistim = getname(ai, "stimuli")
     stimhi  = find_pulse_starts(aistim; sampmap=:volts)
     stimlo  = find_pulse_stops(aistim; sampmap=:volts)
-    aiframe = getname(ai, "camera frame TTL")
-    framestarts = find_pulse_starts(aiframe; sampmap=:volts)
+    if occursin("camera frame TTL", header["label list"])
+        aiframe = getname(ai, "camera frame TTL")
+        framestarts = find_pulse_starts(aiframe; sampmap=:volts)
+    elseif occursin("camera1 frame monitor", header["di label list"])
+        di = parse_di(difile, header)
+        diframe = getname(di, "camera1 frame monitor")
+        framestarts = find_pulse_starts(diframe) #; sampmap=:volts)
+    end
 
     # Record as frameidx after the stimulus trigger
     fps = header["frames per stack"]

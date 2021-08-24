@@ -22,8 +22,8 @@ function stim_randomize(filein::AbstractString, trials::Int; fileout=insertfilen
     return fileout
 end
 
-function stim_randomize(io::IO, filein::AbstractString, trials::Int; writeheader=false, kwargs...)
-    df = CSV.File(filein) |> DataFrame!
+function stim_randomize(io::IO, filein::AbstractString, trials::Int; header=false, kwargs...)
+    df = CSV.File(filein) |> DataFrame
     println("Headers found: ", String.(names(df)))
     n = size(df, 1)
     println(n, " stimuli found")
@@ -35,7 +35,7 @@ function stim_randomize(io::IO, filein::AbstractString, trials::Int; writeheader
     for i = 1:trials
         append!(p, randperm(n))
     end
-    CSV.write(io, df[p, :]; writeheader=writeheader, kwargs...)
+    CSV.write(io, df[p, :]; header=header, kwargs...)
     flush(io)
 end
 
@@ -48,7 +48,7 @@ function update_imagine(imaginefile, sequencefile; um_per_pixel=nothing, aifile=
     um_per_pixel < 0 && error("must specify um_per_pixel")
     header["um per pixel"] = um_per_pixel
 
-    df = CSV.File(sequencefile; header=csvheader, kwargs...) |> DataFrame!
+    df = CSV.File(sequencefile; header=csvheader, kwargs...) |> DataFrame
     n = size(df, 1)
 
     # Scan the AI file for stimulus triggers

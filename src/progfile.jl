@@ -16,7 +16,7 @@ const default_params = Dict{String,String}(
 	"PressureUpperLimit"    => "350",       # [bar]
 	"MaximumFlowRampDown"   => "6.000",     # [ml/min²]
 	"MaximumFlowRampUp"     => "6.000",     # [ml/min²]
-	"%A.Equate"             => "%A",
+	"%A.Equate"             => "\"%A\"",
 	"DrawSpeed"             => "10.000",    # [µl/s]
 	"DrawDelay"             => "1000",      # [ms]
 	"DispSpeed"             => "20.000",    # [µl/s]
@@ -90,8 +90,8 @@ function chromeleon_program(io::IO, params=default_params)
 
         "\tInjectMode =\tUserProg\r\n\r\n",
 
-        "\tThe following section of code (containing all beginning with 'Udp') is not evaluated by Chromeleon as it is read.\r\n",
-        "\tInstead, the commands are carried out when the 'Inject' command is read.\r\n\r\n",
+        "\t; The following section of code (containing all beginning with 'Udp') is not evaluated by Chromeleon as it is read.\r\n",
+        "\t; Instead, the commands are carried out when the 'Inject' command is read.\r\n\r\n",
 
         "\t; USER DEFINED INJECTION STARTS HERE\r\n\r\n",
 

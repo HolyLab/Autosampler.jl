@@ -12,7 +12,7 @@ Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
-CSV = "0.8"
+CSV = "0.8, 0.10"
 DataFrames = "1"
 ImagineFormat = "1"
 ImagineInterface = "0.1"
